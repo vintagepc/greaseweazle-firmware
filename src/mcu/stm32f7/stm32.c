@@ -66,7 +66,29 @@ static void clock_init(void)
     /* Timers run from Host Clock (216MHz). */
     rcc->dckcfgr1 = RCC_DCKCFGR1_TIMPRE;
 
-    /* Wait for the PLL to stabilise. */
+    /* Start up the external oscillator. */
+    rcc->cr |= RCC_CR_HSEON | RCC_CR_HSEBYP;
+    while (!(rcc->cr & RCC_CR_HSERDY))
+        cpu_relax();
+
+    /* Main PLL. */
+#if 0
+    rcc->pllcfgr = (RCC_PLLCFGR_PLLSRC_HSE | /* PLLSrc = HSE = 8MHz */
+                    RCC_PLLCFGR_PLLM(4) |    /* PLL In = HSE/4 = 2MHz */
+                    RCC_PLLCFGR_PLLN(216) |  /* PLLVCO = 2MHz*216 = 432MHz */
+                    RCC_PLLCFGR_PLLP(0) |    /* SYSCLK = 432MHz/2 = 216MHz */
+                    RCC_PLLCFGR_PLLQ(9));    /* USB    = 432MHz/9 = 48MHz */
+#else
+    rcc->pllcfgr = (RCC_PLLCFGR_PLLSRC_HSE | /* PLLSrc = HSE = 25MHz */
+                    RCC_PLLCFGR_PLLM(25) |    /* PLL In = HSE/25 = 1MHz */
+                    RCC_PLLCFGR_PLLN(432) |  /* PLLVCO = 1MHz*432 = 432MHz */
+                    RCC_PLLCFGR_PLLP(0) |    /* SYSCLK = 432MHz/2 = 216MHz */
+                    RCC_PLLCFGR_PLLQ(9));    /* USB    = 432MHz/9 = 48MHz */
+#endif
+
+    /* Enable and stabilise the PLL. */
+    rcc->cr |= RCC_CR_PLLON;
+
     while (!(rcc->cr & RCC_CR_PLLRDY))
         cpu_relax();
 
