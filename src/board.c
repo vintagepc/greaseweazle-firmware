@@ -94,7 +94,7 @@ void board_init(void)
     gpio_configure_pin(gpio_led, pin_led, GPO_pushpull(IOSPD_LOW, HIGH));
 #if defined(NDEBUG) && MCU == AT32F4
     if (at32f4_series != AT32F415)
-        gpio_configure_pin(gpioa, 9, GPO_pushpull(IOSPD_LOW, HIGH));
+        gpio_configure_pin(gpioa, 9, GPO_pushpull(IOSPD_LOW, LOW));
 #endif
 }
 
@@ -104,7 +104,7 @@ void act_led(bool_t on)
     gpio_write_pin(gpio_led, pin_led, on ? LOW : HIGH);
 #if defined(NDEBUG) && MCU == AT32F4
     if (at32f4_series != AT32F415)
-        gpio_write_pin(gpioa, 9, on ? LOW : HIGH);
+        gpio_write_pin(gpioa, 9, on ? HIGH : LOW);
 #endif
 }
 
