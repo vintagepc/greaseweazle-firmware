@@ -104,7 +104,7 @@ void act_led(bool_t on)
     gpio_write_pin(gpio_led, pin_led, on ? LOW : HIGH);
 #if defined(NDEBUG) && MCU == AT32F4
     if (at32f4_series != AT32F415)
-        gpio_write_pin(gpioa, 9, on ? HIGH : LOW);
+        gpio_write_pin(gpioa, 9, on ? HIGH : LOW );
 #endif
 }
 
